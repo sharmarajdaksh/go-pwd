@@ -1,0 +1,3 @@
+DatabaseFile: "go-pwd.db"
+# MasterSecret is expected to be 32 characters in length
+MasterSecret: "QAfsw8@dQbz@K#EdTSZandLz6W*Wt61G"
