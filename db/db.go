@@ -11,19 +11,19 @@ import (
 
 var db *gorm.DB
 
-// InitializeDB initializes the database connection for password access
-func InitializeDB() error {
+// Initialize initializes the database connection for password access
+func Initialize() error {
 
 	dbFile := config.GetDatabaseFile()
 
 	var err error
 	db, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("failed to open database connection: %v", err)
+		return fmt.Errorf("failed to open database connection: %w", err)
 	}
 
 	if err = db.AutoMigrate(&Password{}); err != nil {
-		return fmt.Errorf("failed to make database migrations: %v", err)
+		return fmt.Errorf("failed to make database migrations: %w", err)
 	}
 
 	return nil

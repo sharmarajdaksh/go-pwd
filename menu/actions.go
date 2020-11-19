@@ -83,7 +83,7 @@ func (a *newPasswordAction) execute() error {
 
 	err := p.Save()
 	if err != nil {
-		return fmt.Errorf("An error occurred while creating the new password entry: %v", err)
+		return fmt.Errorf("An error occurred while creating the new password entry: %w", err)
 	}
 
 	fmt.Println("Password entry created successfully")

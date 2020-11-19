@@ -39,11 +39,11 @@ func (p *Password) Save() error {
 		p.Password,
 	)
 	if err != nil {
-		return fmt.Errorf("failed to save password: %v", err)
+		return fmt.Errorf("failed to save password: %w", err)
 	}
 
 	if tx := db.Create(p); tx.Error != nil {
-		return fmt.Errorf("failed to save Password: %v", tx.Error)
+		return fmt.Errorf("failed to save Password: %w", tx.Error)
 	}
 	return nil
 }
@@ -73,7 +73,7 @@ func fetchRecordsForQuery(p *Password) ([]Password, error) {
 	defer rows.Close()
 
 	if err != nil {
-		return []Password{}, fmt.Errorf("failed to query database: %v", err)
+		return []Password{}, fmt.Errorf("failed to query database: %w", err)
 	}
 
 	var ps []Password
@@ -82,11 +82,14 @@ func fetchRecordsForQuery(p *Password) ([]Password, error) {
 
 	for rows.Next() {
 		var p Password
-		db.ScanRows(rows, &p)
+		err = db.ScanRows(rows, &p)
+		if err != nil {
+			return []Password{}, fmt.Errorf("failed to parse data: %w", err)
+		}
 
 		p.Password, err = secrets.DecryptString(decKey, p.Password)
 		if err != nil {
-			return []Password{}, nil
+			return []Password{}, fmt.Errorf("failed to encrypt data: %w", err)
 		}
 
 		ps = append(ps, p)

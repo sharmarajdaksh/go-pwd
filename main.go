@@ -17,7 +17,7 @@ func init() {
 		runtime.Goexit()
 	}
 
-	if err := db.InitializeDB(); err != nil {
+	if err := db.Initialize(); err != nil {
 		fmt.Println("error: failed to initialize database: ", err)
 		runtime.Goexit()
 	}

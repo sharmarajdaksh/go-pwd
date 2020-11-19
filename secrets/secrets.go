@@ -18,7 +18,7 @@ func EncryptString(k string, s string) (string, error) {
 
 	ciphertext, err := encrypt(key, plaintext)
 	if err != nil {
-		return "", fmt.Errorf("failed to encrypt string: %v", err)
+		return "", fmt.Errorf("failed to encrypt string: %w", err)
 	}
 
 	return ciphertext, nil
@@ -28,12 +28,12 @@ func encrypt(key, plaintext []byte) (string, error) {
 
 	gcm, err := getGcmForKey(key)
 	if err != nil {
-		return "", fmt.Errorf("gcm generation failed: %v", err)
+		return "", fmt.Errorf("gcm generation failed: %w", err)
 	}
 
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", fmt.Errorf("failed to read nonce: %v", err)
+		return "", fmt.Errorf("failed to read nonce: %w", err)
 	}
 
 	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
@@ -46,12 +46,12 @@ func DecryptString(k string, s string) (string, error) {
 
 	ciphertext, err := hex.DecodeString(s)
 	if err != nil {
-		return "", fmt.Errorf("failed to decode ciphertext: %v", err)
+		return "", fmt.Errorf("failed to decode ciphertext: %w", err)
 	}
 
 	plaintext, err := decrypt(key, ciphertext)
 	if err != nil {
-		return "", fmt.Errorf("failed to decrypt string: %v", err)
+		return "", fmt.Errorf("failed to decrypt string: %w", err)
 	}
 
 	return plaintext, nil
@@ -61,7 +61,7 @@ func DecryptString(k string, s string) (string, error) {
 func decrypt(key, ciphertext []byte) (string, error) {
 	gcm, err := getGcmForKey(key)
 	if err != nil {
-		return "", fmt.Errorf("gcm generation failed: %v", err)
+		return "", fmt.Errorf("gcm generation failed: %w", err)
 	}
 
 	nonceSize := gcm.NonceSize()
@@ -73,7 +73,7 @@ func decrypt(key, ciphertext []byte) (string, error) {
 
 	plaintext, err := gcm.Open(nil, nonce, enc, nil)
 	if err != nil {
-		return "", fmt.Errorf("decrytion routine failed: %v", err)
+		return "", fmt.Errorf("decrytion routine failed: %w", err)
 	}
 
 	p := string(plaintext)
@@ -84,12 +84,12 @@ func decrypt(key, ciphertext []byte) (string, error) {
 func getGcmForKey(key []byte) (cipher.AEAD, error) {
 	cphr, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create aes cipher: %v", err)
+		return nil, fmt.Errorf("failed to create aes cipher: %w", err)
 	}
 
 	gcm, err := cipher.NewGCM(cphr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create gcm: %v", err)
+		return nil, fmt.Errorf("failed to create gcm: %w", err)
 	}
 
 	return gcm, nil

@@ -22,7 +22,7 @@ var programActions = []action{
 // RunProgram starts the program menu
 func RunProgram() {
 
-	for true {
+	for {
 		ac, err := selectAction()
 		if err != nil {
 			fmt.Println(err)
